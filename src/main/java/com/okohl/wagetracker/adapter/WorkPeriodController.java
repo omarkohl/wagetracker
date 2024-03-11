@@ -1,6 +1,8 @@
-package com.okohl.wagetracker;
+package com.okohl.wagetracker.adapter;
 
 import org.springframework.web.bind.annotation.RestController;
+
+import com.okohl.wagetracker.domain.WorkPeriod;
 
 import java.time.Instant;
 import java.util.List;
@@ -8,7 +10,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-public class WordPeriodController {
+public class WorkPeriodController {
 
     @GetMapping("/work-periods")
     public List<WorkPeriod> getWorkPeriods() {
