@@ -2,6 +2,9 @@
 
 Informal collection of requirements and user stories.
 
+
+## General
+
 * There are two types of users, HR (human resources) employees that need to
   know how much employees are working so they can be paid their wages and
   regular employees themselves who have the ability to track their own working
@@ -12,6 +15,9 @@ Informal collection of requirements and user stories.
   (e.g. Holly) and regular employees will have first names starting with E
   (e.g. Enzo).
 * Implement a REST API with Spring Boot 3.
+
+
+## HR employee
 
 * As Holly, I want to be able to see the monthly working hours for each
   employee for payroll processing.
@@ -28,6 +34,8 @@ Informal collection of requirements and user stories.
 * As Holly, I don't want any HR employee to overwrite an employee's working
   hours once the wages for that month have been paid.
 
+## Regular employee
+
 * As Enzo, I want to have a user-friendly REST interface where I can easily
   input a start and end time for the periods I was working. There might be
   multiple such periods per day (due to breaks) and such a period might also
@@ -42,6 +50,9 @@ Informal collection of requirements and user stories.
 * As Enzo, I want that the working hours I track are used as the basis for the
   payroll processing without me having to perform any additional steps.
 
+
+## Operations
+
 * As Diana, the DevOps engineer, I want to ensure the application is fast and
   responsive, in particular that non-critical processing is performed during
   the night time to reduce load.
@@ -50,6 +61,9 @@ Informal collection of requirements and user stories.
 ## Someday
 
 Out of scope for now.
+
+
+## HR employee
 
 * As Holly, I want to be able to log in to the system securely so that I can
   access the employee time tracking and payroll features.
@@ -63,6 +77,9 @@ Out of scope for now.
 * As Holly, I want to be able to fix mistakes in the working hours from several
   months ago even if the wages have already been paid.
 
+
+## Regular employee
+
 * As Enzo, I want to be able to log in to the system securely to record my daily
   working hours.
 * As Enzo, I want to receive reminders or notifications if I forget to record
@@ -73,8 +90,14 @@ Out of scope for now.
 * As Enzo, I want to receive notifications when my submitted working hours are
   approved or rejected by HR for transparency.
 
+
+## Auditor
+
 * As Amal, the auditor, I want that all actions taken in the system are logged
   so it's possible to trace mistakes and manipulation attempts.
+
+
+## Operations
 
 * As Diana, the DevOps engineer, I want to implement automated backups of the
   database to ensure data integrity and disaster recovery.
