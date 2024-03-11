@@ -1,4 +1,4 @@
-package com.okohl.wagetracker;
+package com.okohl.wagetracker.domain;
 
 import java.time.Instant;
 
