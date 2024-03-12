@@ -1,4 +1,4 @@
-package com.okohl.wagetracker.adapter;
+package com.okohl.wagetracker.adapter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
