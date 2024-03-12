@@ -29,3 +29,11 @@ modularized properly to make this transition possible in the future.
 
 Use a hexagonal architecture to ensure future extensibility even though for
 such a simple application right now it's overkill.
+
+The time tracking part of the application requires different data than the
+payroll part. For example employees need all the work periods for the time
+tracking whereas this data is not relevant for the payroll part. It's not
+elegant having all this in the same domain model if only part of the
+application require it. It might be better to separate it into different
+applications. For now I will leave it together for simplicity, also at the DB
+level.
