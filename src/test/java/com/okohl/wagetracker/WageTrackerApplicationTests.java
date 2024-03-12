@@ -24,6 +24,13 @@ class WageTrackerApplicationTests {
 	}
 
 	@Test
+	void testGetWorkPeriodsForUnknownEmployee() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/v0/time-tracking/2/work-periods"))
+				.andExpect(status().isOk())
+				.andExpect(result -> result.getResponse().getContentAsString().equals("[]"));
+	}
+
+	@Test
 	void contextLoads() {
 	}
 
