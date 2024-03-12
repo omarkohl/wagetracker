@@ -2,12 +2,20 @@ package com.okohl.wagetracker.services;
 
 import org.springframework.stereotype.Service;
 
+import com.okohl.wagetracker.adapter.repositories.TimeTrackingRepository;
 import com.okohl.wagetracker.domain.WorkPeriod;
 import java.time.Instant;
 import java.util.List;
 
 @Service
 public class TimeTrackingService {
+
+    private final TimeTrackingRepository timeTrackingRepository;
+
+    public TimeTrackingService(TimeTrackingRepository timeTrackingRepository) {
+        this.timeTrackingRepository = timeTrackingRepository;
+    }
+
     public List<WorkPeriod> getWorkPeriods(Long employeeId) {
         // For now, return a static list of work periods for the employee with the given
         // id
