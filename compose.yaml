@@ -2,8 +2,8 @@ services:
   database:
     image: 'postgres:16.2'
     ports:
-    - '5432'
+    - '5432:5432'
     environment:
     - 'POSTGRES_USER=myuser'
-    - 'POSTGRES_DB=mydatabase'
+    - 'POSTGRES_DB=wagetracker'
     - 'POSTGRES_PASSWORD=secret'
