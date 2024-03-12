@@ -11,6 +11,5 @@ import java.time.Instant;
 public record WorkPeriod(
         Long id,
         Instant start,
-        Instant end,
-        Employee employee) {
+        Instant end) {
 }

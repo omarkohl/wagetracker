@@ -20,7 +20,7 @@ class WageTrackerApplicationTests {
 	void testGetWorkPeriods() throws Exception {
 		mockMvc.perform(MockMvcRequestBuilders.get("/v0/time-tracking/1/work-periods"))
 				.andExpect(status().isOk())
-				.andExpect(result -> result.getResponse().getContentAsString().contains("John Doe"));
+				.andExpect(result -> result.getResponse().getContentAsString().contains("2022-01-02T16:00:00Z"));
 	}
 
 	@Test
