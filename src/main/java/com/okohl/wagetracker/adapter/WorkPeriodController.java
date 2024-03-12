@@ -3,8 +3,8 @@ package com.okohl.wagetracker.adapter;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.okohl.wagetracker.domain.WorkPeriod;
+import com.okohl.wagetracker.services.TimeTrackingService;
 
-import java.time.Instant;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,26 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/v0/time-tracking")
 public class WorkPeriodController {
 
+    private final TimeTrackingService timeTrackingService;
+
+    public WorkPeriodController(TimeTrackingService timeTrackingService) {
+        this.timeTrackingService = timeTrackingService;
+    }
+
     @GetMapping("/{employeeId}/work-periods")
     public List<WorkPeriod> getWorkPeriods(@PathVariable("employeeId") Long employeeId) {
-        // For now, return a static list of work periods for the employee with the given
-        // id
-        if (employeeId == 1L) {
-            return List.of(
-                    new WorkPeriod(
-                            100L,
-                            Instant.parse("2022-01-01T08:00:00Z"),
-                            Instant.parse("2022-01-01T16:00:00Z")),
-                    new WorkPeriod(
-                            101L,
-                            Instant.parse("2022-01-02T08:00:00Z"),
-                            Instant.parse("2022-01-02T16:00:00Z")),
-                    new WorkPeriod(102L,
-                            Instant.parse("2022-01-03T08:00:00Z"),
-                            Instant.parse("2022-01-03T16:00:00Z")));
-        } else {
-            // If the employee id is not 1, return an empty list
-            return List.of();
-        }
+        return timeTrackingService.getWorkPeriods(employeeId);
     }
 }
