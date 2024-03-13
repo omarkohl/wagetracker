@@ -26,9 +26,14 @@ public class WageTrackerApplication {
 		SpringApplication.run(WageTrackerApplication.class, args);
 	}
 
+	/*
+	 * This method is used to create some demo data for the application. It
+	 * breaks proper encapsulation by directly interacting with the
+	 * repositories but it's convenient for the purpose of this demo.
+	 */
 	@Bean
 	@Profile("!test")
-	public CommandLineRunner demo(
+	public CommandLineRunner createDemoData(
 			TimeTrackingRepository timeTrackingRepository,
 			EmployeeRepository employeeRepository) {
 		return (args) -> {
@@ -58,7 +63,6 @@ public class WageTrackerApplication {
 			employee.setWorkPeriods(workPeriods);
 			employeeRepository.save(employee);
 			timeTrackingRepository.saveAll(workPeriods);
-
 			log.info("Saved employee with work periods");
 
 			log.info("WorkPeriods found with findAll():");
@@ -69,5 +73,4 @@ public class WageTrackerApplication {
 			log.info("");
 		};
 	}
-
 }
