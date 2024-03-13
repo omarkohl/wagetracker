@@ -22,7 +22,7 @@ public class WorkPeriodController {
 
     // Note this is duplicating the RequestMapping above, which is not good.
     // Needs a better solution.
-    private final String baseURL = "/v0/time-tracking/";
+    private final String baseURL = "/v0/time-tracking";
 
     private final TimeTrackingService timeTrackingService;
 
@@ -40,7 +40,7 @@ public class WorkPeriodController {
             @PathVariable("employeeId") Long employeeId,
             @RequestBody WorkPeriod workPeriod) {
         var createdWorkPeriod = timeTrackingService.addWorkPeriod(new Employee(employeeId, ""), workPeriod);
-        var createdUri = URI.create(this.baseURL + employeeId + "/work-periods/" + createdWorkPeriod.id());
+        var createdUri = URI.create(this.baseURL + "/" + employeeId + "/work-periods/" + createdWorkPeriod.id());
         return ResponseEntity.created(createdUri).body(createdWorkPeriod);
     }
 }
