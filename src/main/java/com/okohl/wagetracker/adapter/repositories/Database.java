@@ -89,8 +89,22 @@ public class Database implements DataRepository {
 
     @Override
     public PayrollHours addPayrollHours(PayrollHours payrollHours) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addPayrollHours'");
+        var dbEmployee = employeeRepository.findById(payrollHours.employee().id());
+        if (!dbEmployee.isPresent()) {
+            throw new ResourceNotFoundException("Employee " + payrollHours.employee().id() + " not found");
+        }
+        var dbPayrollHours = new PayrollHoursEntity(
+                payrollHours.month(),
+                dbEmployee.get(),
+                payrollHours.hours(),
+                payrollHours.status());
+        var savedPayrollHours = payrollHoursRepository.save(dbPayrollHours);
+        return new PayrollHours(
+                savedPayrollHours.getId(),
+                savedPayrollHours.getMonth(),
+                new Employee(savedPayrollHours.getEmployee().getId(), savedPayrollHours.getEmployee().getName()),
+                savedPayrollHours.getHours(),
+                savedPayrollHours.getStatus());
     }
 
     @Override

@@ -192,6 +192,38 @@ class WageTrackerApplicationIntegrationTests {
 	}
 
 	@Test
+	void testAddPayrollHours() throws Exception {
+		var url = "/v0/payroll";
+		var json = "{\"month\":\"2024-01\",\"employee\":{\"id\":" +
+				validEmployeeId +
+				"},\"hours\":160.0,\"status\":\"UNPROCESSED\"}";
+		webTestClient.post()
+				.uri(url)
+				.contentType(APPLICATION_JSON)
+				.bodyValue(json)
+				.exchange()
+				.expectStatus().isCreated()
+				.expectHeader().contentType(APPLICATION_JSON)
+				.expectBody(String.class)
+				.consumeWith(response -> {
+					var responseBody = response.getResponseBody();
+					assertThat(responseBody).contains("Eoin Curran");
+				});
+
+		// verify that the payroll hours were added
+		webTestClient.get()
+				.uri(url)
+				.exchange()
+				.expectStatus().isOk()
+				.expectHeader().contentType(APPLICATION_JSON)
+				.expectBody(String.class)
+				.consumeWith(response -> {
+					var responseBody = response.getResponseBody();
+					assertThat(responseBody).contains("Eoin Curran");
+				});
+	}
+
+	@Test
 	void contextLoads() {
 	}
 
