@@ -23,10 +23,15 @@ public class Database implements DataRepository {
 
     private final EmployeeRepository employeeRepository;
     private final TimeTrackingRepository timeTrackingRepository;
+    private final PayrollHoursRepository payrollHoursRepository;
 
-    public Database(EmployeeRepository employeeRepository, TimeTrackingRepository timeTrackingRepository) {
+    public Database(
+            EmployeeRepository employeeRepository,
+            TimeTrackingRepository timeTrackingRepository,
+            PayrollHoursRepository payrollHoursRepository) {
         this.employeeRepository = employeeRepository;
         this.timeTrackingRepository = timeTrackingRepository;
+        this.payrollHoursRepository = payrollHoursRepository;
     }
 
     @Override
@@ -73,8 +78,19 @@ public class Database implements DataRepository {
 
     @Override
     public List<PayrollHours> getPayrollHours(YearMonth month) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPayrollHours'");
+        var payrollHours = new ArrayList<PayrollHours>();
+        var payrollHoursDb = this.payrollHoursRepository.findByMonth(month);
+        for (var ph : payrollHoursDb) {
+            var employeeDb = ph.getEmployee();
+            var employee = new Employee(employeeDb.getId(), employeeDb.getName());
+            payrollHours.add(new PayrollHours(
+                    ph.getId(),
+                    ph.getMonth(),
+                    employee,
+                    ph.getHours(),
+                    ph.getStatus()));
+        }
+        return payrollHours;
     }
 
     @Override

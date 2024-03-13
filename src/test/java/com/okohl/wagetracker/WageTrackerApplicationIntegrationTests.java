@@ -10,8 +10,11 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.okohl.wagetracker.adapter.repositories.EmployeeEntity;
 import com.okohl.wagetracker.adapter.repositories.EmployeeRepository;
+import com.okohl.wagetracker.adapter.repositories.PayrollHoursEntity;
+import com.okohl.wagetracker.adapter.repositories.PayrollHoursRepository;
 import com.okohl.wagetracker.adapter.repositories.TimeTrackingRepository;
 import com.okohl.wagetracker.adapter.repositories.WorkPeriodEntity;
+import com.okohl.wagetracker.domain.PayrollHoursStatus;
 import com.okohl.wagetracker.domain.WorkPeriod;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -23,6 +26,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.time.Instant;
 import java.util.Random;
+import java.time.YearMonth;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -36,6 +40,9 @@ class WageTrackerApplicationIntegrationTests {
 
 	@Autowired
 	private EmployeeRepository employeeRepository;
+
+	@Autowired
+	private PayrollHoursRepository payrollHoursRepository;
 
 	private Long validEmployeeId;
 
@@ -57,9 +64,18 @@ class WageTrackerApplicationIntegrationTests {
 								Instant.parse("2023-02-02T16:00:00Z")))
 
 		);
+		var payrollHours = new ArrayList<PayrollHoursEntity>(
+				List.of(
+						new PayrollHoursEntity(
+								YearMonth.parse("2024-01"),
+								employee,
+								160.0f,
+								PayrollHoursStatus.UNPROCESSED)));
 		employee.setWorkPeriods(workPeriods);
+		employee.setPayrollHours(payrollHours);
 		employeeRepository.save(employee);
 		timeTrackingRepository.saveAll(workPeriods);
+		payrollHoursRepository.saveAll(payrollHours);
 	}
 
 	@Test
@@ -155,6 +171,23 @@ class WageTrackerApplicationIntegrationTests {
 				.consumeWith(response -> {
 					var responseBody = response.getResponseBody();
 					assertThat(responseBody).contains("Employee", "not found");
+				});
+	}
+
+	@Test
+	void testGetPayrollHours() throws Exception {
+		var url = "/v0/payroll/2024-01";
+		this.webTestClient
+				.get()
+				.uri(url)
+				.header(ACCEPT, APPLICATION_JSON_VALUE)
+				.exchange()
+				.expectStatus().isOk()
+				.expectHeader().contentType(APPLICATION_JSON)
+				.expectBody(String.class)
+				.consumeWith(response -> {
+					var responseBody = response.getResponseBody();
+					assertThat(responseBody).contains("John Doe");
 				});
 	}
 

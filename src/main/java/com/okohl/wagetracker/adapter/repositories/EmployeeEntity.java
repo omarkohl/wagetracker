@@ -18,6 +18,9 @@ public class EmployeeEntity {
     @OneToMany(mappedBy = "employee")
     private List<WorkPeriodEntity> workPeriods;
 
+    @OneToMany(mappedBy = "employee")
+    private List<PayrollHoursEntity> payrollHours;
+
     private EmployeeEntity() {
     }
 
@@ -39,5 +42,13 @@ public class EmployeeEntity {
 
     public void setWorkPeriods(List<WorkPeriodEntity> workPeriods) {
         this.workPeriods = workPeriods;
+    }
+
+    public List<PayrollHoursEntity> getPayrollHours() {
+        return payrollHours;
+    }
+
+    public void setPayrollHours(List<PayrollHoursEntity> payrollHours) {
+        this.payrollHours = payrollHours;
     }
 }
