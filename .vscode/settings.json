@@ -1,4 +1,13 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.test.config": [
+        {
+            "name": "local",
+            "workingDirectory": "${workspaceFolder}",
+            "env": {
+                "spring.config.location": "${workspaceFolder}/src/test/resources/",
+            },
+        },
+    ]
 }
