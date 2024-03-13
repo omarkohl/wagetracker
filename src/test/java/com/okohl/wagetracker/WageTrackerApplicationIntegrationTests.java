@@ -29,7 +29,7 @@ import java.util.Random;
 @AutoConfigureMockMvc
 @SpringBootTest
 @ActiveProfiles("test")
-class WageTrackerApplicationTests {
+class WageTrackerApplicationIntegrationTests {
 
 	@Autowired
 	private MockMvc mockMvc;
