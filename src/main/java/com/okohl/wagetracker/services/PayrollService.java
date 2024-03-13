@@ -25,4 +25,12 @@ public class PayrollService {
     public List<PayrollHours> getPayrollHours(YearMonth month, Employee employee) {
         return repository.getPayrollHours(month, employee);
     }
+
+    public PayrollHours addPayrollHours(PayrollHours payrollHours) {
+        return repository.addPayrollHours(payrollHours);
+    }
+
+    public PayrollHours updatePayrollHours(PayrollHours payrollHours) {
+        return repository.updatePayrollHours(payrollHours);
+    }
 }

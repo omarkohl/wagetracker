@@ -61,4 +61,52 @@ public class PayrollServiceTest {
         var payrollHours = service.getPayrollHours(YearMonth.parse("2024-01"), new Employee(100L, ""));
         assertEquals(2, payrollHours.size());
     }
+
+    @Test
+    void testAddPayrollHours() {
+        DataRepository mockRepository = Mockito.mock(DataRepository.class);
+        when(mockRepository.addPayrollHours(any(PayrollHours.class))).thenReturn(
+                new PayrollHours(
+                        100L,
+                        YearMonth.parse("2024-01"),
+                        new Employee(1L, "John Doe"),
+                        40.0f,
+                        PayrollHoursStatus.UNPROCESSED));
+
+        var service = new PayrollService(mockRepository);
+        var payrollHours = new PayrollHours(
+                null,
+                YearMonth.parse("2024-01"),
+                new Employee(1L, "John Doe"),
+                40.0f,
+                PayrollHoursStatus.UNPROCESSED);
+        PayrollHours ph2 = service.addPayrollHours(payrollHours);
+        assertEquals(100L, ph2.id());
+        // verify mockRepository was called
+        verify(mockRepository).addPayrollHours(eq(payrollHours));
+    }
+
+    @Test
+    void testUpdatePayrollHours() {
+        DataRepository mockRepository = Mockito.mock(DataRepository.class);
+        when(mockRepository.updatePayrollHours(any(PayrollHours.class))).thenReturn(
+                new PayrollHours(
+                        100L,
+                        YearMonth.parse("2024-01"),
+                        new Employee(1L, "John Doe"),
+                        40.0f,
+                        PayrollHoursStatus.UNPROCESSED));
+
+        var service = new PayrollService(mockRepository);
+        var payrollHours = new PayrollHours(
+                100L,
+                YearMonth.parse("2024-01"),
+                new Employee(1L, "John Doe"),
+                40.0f,
+                PayrollHoursStatus.UNPROCESSED);
+        PayrollHours ph2 = service.updatePayrollHours(payrollHours);
+        assertEquals(100L, ph2.id());
+        // verify mockRepository was called
+        verify(mockRepository).updatePayrollHours(eq(payrollHours));
+    }
 }

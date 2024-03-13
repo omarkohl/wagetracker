@@ -81,4 +81,16 @@ public class Database implements DataRepository {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getPayrollHours'");
     }
+
+    @Override
+    public PayrollHours addPayrollHours(PayrollHours payrollHours) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addPayrollHours'");
+    }
+
+    @Override
+    public PayrollHours updatePayrollHours(PayrollHours payrollHours) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'updatePayrollHours'");
+    }
 }

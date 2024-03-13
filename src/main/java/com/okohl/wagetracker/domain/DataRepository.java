@@ -8,4 +8,6 @@ public interface DataRepository {
     public WorkPeriod addWorkPeriod(Employee employee, WorkPeriod workPeriod);
     public List<PayrollHours> getPayrollHours(YearMonth month);
     public List<PayrollHours> getPayrollHours(YearMonth month, Employee employee);
+    public PayrollHours addPayrollHours(PayrollHours payrollHours);
+    public PayrollHours updatePayrollHours(PayrollHours payrollHours);
 }
