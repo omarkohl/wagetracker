@@ -3,6 +3,7 @@ package com.okohl.wagetracker;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.YearMonth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +15,11 @@ import org.springframework.context.annotation.Profile;
 
 import com.okohl.wagetracker.adapter.repositories.EmployeeEntity;
 import com.okohl.wagetracker.adapter.repositories.EmployeeRepository;
+import com.okohl.wagetracker.adapter.repositories.PayrollHoursEntity;
+import com.okohl.wagetracker.adapter.repositories.PayrollHoursRepository;
 import com.okohl.wagetracker.adapter.repositories.TimeTrackingRepository;
 import com.okohl.wagetracker.adapter.repositories.WorkPeriodEntity;
+import com.okohl.wagetracker.domain.PayrollHoursStatus;
 
 @SpringBootApplication
 public class WageTrackerApplication {
@@ -35,34 +39,58 @@ public class WageTrackerApplication {
 	@Profile("!test")
 	public CommandLineRunner createDemoData(
 			TimeTrackingRepository timeTrackingRepository,
-			EmployeeRepository employeeRepository) {
+			EmployeeRepository employeeRepository,
+			PayrollHoursRepository payrollHoursRepository) {
 		return (args) -> {
-			var employee = new EmployeeEntity("John Doe");
-			employee = employeeRepository.save(employee);
+			var emilio = new EmployeeEntity("Emilio López");
+			emilio = employeeRepository.save(emilio);
+			var erika = new EmployeeEntity("Erika Müller");
+			erika = employeeRepository.save(erika);
 
 			var workPeriods = new ArrayList<WorkPeriodEntity>(
 					List.of(
 							new WorkPeriodEntity(
-									employee,
+									emilio,
 									Instant.parse("2022-01-01T08:00:00Z"),
 									Instant.parse("2022-01-01T16:00:00Z")),
 							new WorkPeriodEntity(
-									employee,
+									emilio,
 									Instant.parse("2022-01-02T08:00:00Z"),
 									Instant.parse("2022-01-02T16:00:00Z")),
 							new WorkPeriodEntity(
-									employee,
+									emilio,
 									Instant.parse("2022-01-03T08:00:00Z"),
 									Instant.parse("2022-01-03T16:00:00Z")),
 							new WorkPeriodEntity(
-									employee,
+									emilio,
 									Instant.parse("2022-01-04T08:00:00Z"),
 									Instant.parse("2022-01-04T16:00:00Z")))
 
 			);
-			employee.setWorkPeriods(workPeriods);
-			employeeRepository.save(employee);
+			var payrollHours = new ArrayList<PayrollHoursEntity>(
+					List.of(
+							new PayrollHoursEntity(
+									YearMonth.parse("2022-01"),
+									emilio,
+									140.0f,
+									PayrollHoursStatus.UNPROCESSED),
+							new PayrollHoursEntity(
+									YearMonth.parse("2022-02"),
+									emilio,
+									160.0f,
+									PayrollHoursStatus.UNPROCESSED),
+							new PayrollHoursEntity(
+									YearMonth.parse("2022-03"),
+									emilio,
+									180.0f,
+									PayrollHoursStatus.UNPROCESSED),
+							new PayrollHoursEntity(
+									YearMonth.parse("2022-01"),
+									erika,
+									200.0f,
+									PayrollHoursStatus.UNPROCESSED)));
 			timeTrackingRepository.saveAll(workPeriods);
+			payrollHoursRepository.saveAll(payrollHours);
 			log.info("Saved employee with work periods");
 
 			log.info("WorkPeriods found with findAll():");
