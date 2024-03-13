@@ -2,6 +2,7 @@ package com.okohl.wagetracker.adapter.repositories;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.time.YearMonth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import com.okohl.wagetracker.domain.Employee;
+import com.okohl.wagetracker.domain.PayrollHours;
 import com.okohl.wagetracker.domain.DataRepository;
 import com.okohl.wagetracker.domain.WorkPeriod;
 
@@ -66,5 +68,17 @@ public class Database implements DataRepository {
                 savedWorkPeriod.getId(),
                 savedWorkPeriod.getStart(),
                 savedWorkPeriod.getEnd());
+    }
+
+    @Override
+    public List<PayrollHours> getPayrollHours(YearMonth month) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPayrollHours'");
+    }
+
+    @Override
+    public List<PayrollHours> getPayrollHours(YearMonth month, Employee employee) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPayrollHours'");
     }
 }

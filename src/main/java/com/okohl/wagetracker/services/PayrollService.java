@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
-import java.util.ArrayList;
 import com.okohl.wagetracker.domain.DataRepository;
 import com.okohl.wagetracker.domain.PayrollHours;
+import com.okohl.wagetracker.domain.Employee;
 import java.time.YearMonth;
 
 @Service
@@ -19,7 +19,10 @@ public class PayrollService {
     }
 
     public List<PayrollHours> getPayrollHours(YearMonth month) {
-        var payrollHours = new ArrayList<PayrollHours>();
-        return payrollHours;
+        return repository.getPayrollHours(month);
+    }
+
+    public List<PayrollHours> getPayrollHours(YearMonth month, Long employeeId) {
+        return repository.getPayrollHours(month, new Employee(employeeId, ""));
     }
 }
