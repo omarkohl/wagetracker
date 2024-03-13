@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.okohl.wagetracker.domain.Employee;
 import com.okohl.wagetracker.domain.PayrollHours;
+import com.okohl.wagetracker.domain.ResourceNotFoundException;
 import com.okohl.wagetracker.domain.DataRepository;
 import com.okohl.wagetracker.domain.WorkPeriod;
 
@@ -57,7 +58,7 @@ public class Database implements DataRepository {
     public WorkPeriod addWorkPeriod(Employee employee, WorkPeriod workPeriod) {
         var dbEmployee = employeeRepository.findById(employee.id());
         if (!dbEmployee.isPresent()) {
-            throw new IllegalArgumentException("Employee not found");
+            throw new ResourceNotFoundException("Employee " + employee.id() + " not found");
         }
         var dbWorkPeriod = new WorkPeriodEntity(dbEmployee.get(),
                 workPeriod.start(),

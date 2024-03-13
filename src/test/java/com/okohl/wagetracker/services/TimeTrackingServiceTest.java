@@ -104,4 +104,26 @@ public class TimeTrackingServiceTest {
                 () -> service.addWorkPeriod(new Employee(1L, ""), workPeriod),
                 "End must be in the past");
     }
+
+    @Test
+    void testAddWorkPeriodWithInvalidEmployee() {
+        DataRepository mockRepository = Mockito.mock(DataRepository.class);
+        when(
+                mockRepository.addWorkPeriod(
+                        any(Employee.class),
+                        any(WorkPeriod.class)))
+                .thenThrow(new IllegalArgumentException("Employee 1 not found"));
+
+        var service = new TimeTrackingService(mockRepository);
+        var workPeriod = new WorkPeriod(
+                null,
+                Instant.parse("2024-01-01T08:00:00Z"),
+                Instant.parse("2024-01-01T16:00:00Z"));
+
+        Exception exc = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addWorkPeriod(new Employee(1L, ""), workPeriod));
+
+        assertEquals("Employee 1 not found", exc.getMessage());
+    }
 }

@@ -136,6 +136,29 @@ class WageTrackerApplicationIntegrationTests {
 	}
 
 	@Test
+	void testAddWorkPeriodForUnknownEmployee() throws Exception {
+		// choose a random long that is not validEmployeeId
+		Random random = new Random();
+		Long invalidEmployeeId;
+		do {
+			invalidEmployeeId = random.nextLong();
+		} while (invalidEmployeeId == validEmployeeId);
+		var url = "/v0/time-tracking/" + invalidEmployeeId + "/work-periods";
+		var json = "{\"start\":\"2023-02-03T08:00:00Z\",\"end\":\"2023-02-03T16:00:00Z\"}";
+		webTestClient.post()
+				.uri(url)
+				.contentType(APPLICATION_JSON)
+				.bodyValue(json)
+				.exchange()
+				.expectStatus().isNotFound()
+				.expectBody(String.class)
+				.consumeWith(response -> {
+					var responseBody = response.getResponseBody();
+					assertThat(responseBody).contains("Employee", "not found");
+				});
+	}
+
+	@Test
 	void contextLoads() {
 	}
 
