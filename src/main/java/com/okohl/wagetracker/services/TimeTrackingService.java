@@ -2,44 +2,50 @@ package com.okohl.wagetracker.services;
 
 import org.springframework.stereotype.Service;
 
+import com.okohl.wagetracker.adapter.repositories.EmployeeRepository;
 import com.okohl.wagetracker.adapter.repositories.TimeTrackingRepository;
 import com.okohl.wagetracker.domain.WorkPeriod;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
+
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class TimeTrackingService {
 
-    private final TimeTrackingRepository timeTrackingRepository;
+    private static final Logger log = LoggerFactory.getLogger(TimeTrackingService.class);
 
-    public TimeTrackingService(TimeTrackingRepository timeTrackingRepository) {
+    private final TimeTrackingRepository timeTrackingRepository;
+    private final EmployeeRepository employeeRepository;
+
+    public TimeTrackingService(
+            TimeTrackingRepository timeTrackingRepository,
+            EmployeeRepository employeeRepository) {
         this.timeTrackingRepository = timeTrackingRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     public List<WorkPeriod> getWorkPeriods(Long employeeId) {
-        // For now, return a static list of work periods for the employee with the given
-        // id
-        var all = timeTrackingRepository.findAll();
-        for (var workPeriod : all) {
-            System.out.println(workPeriod.getId());
-            System.out.println(workPeriod.getStart());
-            System.out.println(workPeriod.getEnd());
+        if (employeeId == null) {
+            return List.of();
         }
-        if (employeeId == 1L) {
-            return List.of(
-                    new WorkPeriod(
-                            100L,
-                            Instant.parse("2022-01-01T08:00:00Z"),
-                            Instant.parse("2022-01-01T16:00:00Z")),
-                    new WorkPeriod(
-                            101L,
-                            Instant.parse("2022-01-02T08:00:00Z"),
-                            Instant.parse("2022-01-02T16:00:00Z")),
-                    new WorkPeriod(102L,
-                            Instant.parse("2022-01-03T08:00:00Z"),
-                            Instant.parse("2022-01-03T16:00:00Z")));
+        var employee = employeeRepository.findById(employeeId);
+        if (employee.isPresent()) {
+            log.info("Found employee: " + employee.get().getName());
+            var workPeriods = employee.get().getWorkPeriods();
+            // convert the DB work periods to domain WorkPeriods. TODO should not be done
+            // here in the Service, separation of concerns.
+            var ret = new ArrayList<WorkPeriod>();
+            for (var wp : workPeriods) {
+                ret.add(new WorkPeriod(
+                        wp.getId(),
+                        wp.getStart(),
+                        wp.getEnd()));
+            }
+            return ret;
         } else {
-            // If the employee id is not 1, return an empty list
             return List.of();
         }
     }

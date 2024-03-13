@@ -46,7 +46,11 @@ public class WageTrackerApplication {
 							new WorkPeriod(
 									employee,
 									Instant.parse("2022-01-03T08:00:00Z"),
-									Instant.parse("2022-01-03T16:00:00Z")))
+									Instant.parse("2022-01-03T16:00:00Z")),
+							new WorkPeriod(
+									employee,
+									Instant.parse("2022-01-04T08:00:00Z"),
+									Instant.parse("2022-01-04T16:00:00Z")))
 
 			);
 			employee.setWorkPeriods(workPeriods);
