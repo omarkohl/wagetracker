@@ -25,4 +25,11 @@ public class TimeTrackingService {
     public List<WorkPeriod> getWorkPeriods(Long employeeId) {
         return this.repository.getWorkPeriods(new Employee(employeeId, ""));
     }
+
+    public WorkPeriod addWorkPeriod(Long employeeId, WorkPeriod workPeriod) {
+        if (!workPeriod.start().isBefore(workPeriod.end())) {
+            throw new IllegalArgumentException("End must be after start");
+        }
+        return this.repository.addWorkPeriod(new Employee(employeeId, ""), workPeriod);
+    }
 }

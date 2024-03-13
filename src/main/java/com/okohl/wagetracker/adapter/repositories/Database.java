@@ -48,4 +48,10 @@ public class Database implements DataRepository {
             return List.of();
         }
     }
+
+    @Override
+    public WorkPeriod addWorkPeriod(Employee employee, WorkPeriod workPeriod) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'addWorkPeriod'");
+    }
 }
