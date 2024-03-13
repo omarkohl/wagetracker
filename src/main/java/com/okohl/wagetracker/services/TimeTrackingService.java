@@ -37,4 +37,8 @@ public class TimeTrackingService {
         }
         return this.repository.addWorkPeriod(employee, workPeriod);
     }
+
+    public List<Employee> getEmployees() {
+        return this.repository.getEmployees();
+    }
 }

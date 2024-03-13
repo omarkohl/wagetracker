@@ -1,11 +1,14 @@
 package com.okohl.wagetracker.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import java.time.YearMonth;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.List;
@@ -43,23 +46,16 @@ public class PayrollServiceTest {
     void testGetPayrollHoursWithEmployee() {
         DataRepository mockRepository = Mockito.mock(DataRepository.class);
         when(mockRepository.getPayrollHours(any(YearMonth.class), any(Employee.class))).thenReturn(
-                List.of(
-                        new PayrollHours(
-                                100L,
-                                YearMonth.parse("2024-01"),
-                                new Employee(1L, "John Doe"),
-                                40.0f,
-                                PayrollHoursStatus.UNPROCESSED),
-                        new PayrollHours(
-                                101L,
-                                YearMonth.parse("2024-01"),
-                                new Employee(1L, "John Doe"),
-                                40.0f,
-                                PayrollHoursStatus.UNPROCESSED)));
+                new PayrollHours(
+                        100L,
+                        YearMonth.parse("2024-01"),
+                        new Employee(1L, "John Doe"),
+                        40.0f,
+                        PayrollHoursStatus.UNPROCESSED));
 
         var service = new PayrollService(mockRepository);
         var payrollHours = service.getPayrollHours(YearMonth.parse("2024-01"), new Employee(100L, ""));
-        assertEquals(2, payrollHours.size());
+        assertEquals(100L, payrollHours.id());
     }
 
     @Test
@@ -89,6 +85,13 @@ public class PayrollServiceTest {
     @Test
     void testUpdatePayrollHours() {
         DataRepository mockRepository = Mockito.mock(DataRepository.class);
+        when(mockRepository.getPayrollHours(any(Long.class))).thenReturn(
+                new PayrollHours(
+                        100L,
+                        YearMonth.parse("2024-01"),
+                        new Employee(1L, "John Doe"),
+                        40.0f,
+                        PayrollHoursStatus.UNPROCESSED));
         when(mockRepository.updatePayrollHours(any(PayrollHours.class))).thenReturn(
                 new PayrollHours(
                         100L,
@@ -108,5 +111,31 @@ public class PayrollServiceTest {
         assertEquals(100L, ph2.id());
         // verify mockRepository was called
         verify(mockRepository).updatePayrollHours(eq(payrollHours));
+    }
+
+    @Test
+    void testUpdatePayrollHoursStatusCompletedFails() {
+        DataRepository mockRepository = Mockito.mock(DataRepository.class);
+        when(mockRepository.getPayrollHours(any(Long.class))).thenReturn(
+                new PayrollHours(
+                        100L,
+                        YearMonth.parse("2024-01"),
+                        new Employee(1L, "John Doe"),
+                        40.0f,
+                        PayrollHoursStatus.COMPLETED));
+
+        var service = new PayrollService(mockRepository);
+        var newPayrollHours = new PayrollHours(
+                100L,
+                null,
+                null,
+                150.0f,
+                null);
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.updatePayrollHours(newPayrollHours));
+
+        verify(mockRepository, never()).updatePayrollHours(any());
     }
 }

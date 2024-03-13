@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import com.okohl.wagetracker.domain.DataRepository;
 import com.okohl.wagetracker.domain.PayrollHours;
+import com.okohl.wagetracker.domain.PayrollHoursStatus;
+import com.okohl.wagetracker.domain.ResourceNotFoundException;
 import com.okohl.wagetracker.domain.Employee;
 import java.time.YearMonth;
 
@@ -26,7 +28,7 @@ public class PayrollService {
         return repository.getPayrollHours(month);
     }
 
-    public List<PayrollHours> getPayrollHours(YearMonth month, Employee employee) {
+    public PayrollHours getPayrollHours(YearMonth month, Employee employee) {
         return repository.getPayrollHours(month, employee);
     }
 
@@ -35,6 +37,27 @@ public class PayrollService {
     }
 
     public PayrollHours updatePayrollHours(PayrollHours payrollHours) {
-        return repository.updatePayrollHours(payrollHours);
+        if (payrollHours == null || payrollHours.id() == null) {
+            throw new IllegalArgumentException("PayrollHours and its id cannot be null");
+        }
+        var existingPh = repository.getPayrollHours(payrollHours.id());
+        if (existingPh == null) {
+            throw new ResourceNotFoundException("PayrollHours with id " + payrollHours.id() + " not found");
+        }
+        if (existingPh.status() == PayrollHoursStatus.COMPLETED) {
+            throw new IllegalArgumentException("Cannot update a completed PayrollHours");
+        }
+        var id = existingPh.id();
+        var month = existingPh.month();
+        var employee = existingPh.employee();
+        var totalHours = existingPh.hours();
+        var status = existingPh.status();
+        if (payrollHours.hours() != null) {
+            totalHours = payrollHours.hours();
+        }
+        if (payrollHours.status() != null) {
+            status = payrollHours.status();
+        }
+        return repository.updatePayrollHours(new PayrollHours(id, month, employee, totalHours, status));
     }
 }

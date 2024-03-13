@@ -82,7 +82,7 @@ public class Database implements DataRepository {
     }
 
     @Override
-    public List<PayrollHours> getPayrollHours(YearMonth month, Employee employee) {
+    public PayrollHours getPayrollHours(YearMonth month, Employee employee) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getPayrollHours'");
     }
@@ -131,5 +131,17 @@ public class Database implements DataRepository {
                     ph.getStatus()));
         }
         return payrollHours;
+    }
+
+    @Override
+    public List<Employee> getEmployees() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getEmployees'");
+    }
+
+    @Override
+    public PayrollHours getPayrollHours(Long id) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPayrollHours'");
     }
 }
