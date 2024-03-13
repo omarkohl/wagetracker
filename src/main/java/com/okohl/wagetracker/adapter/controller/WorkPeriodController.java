@@ -2,6 +2,7 @@ package com.okohl.wagetracker.adapter.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import com.okohl.wagetracker.domain.Employee;
 import com.okohl.wagetracker.domain.WorkPeriod;
 import com.okohl.wagetracker.services.TimeTrackingService;
 
@@ -31,14 +32,14 @@ public class WorkPeriodController {
 
     @GetMapping("/{employeeId}/work-periods")
     public List<WorkPeriod> getWorkPeriods(@PathVariable("employeeId") Long employeeId) {
-        return timeTrackingService.getWorkPeriods(employeeId);
+        return timeTrackingService.getWorkPeriods(new Employee(employeeId, ""));
     }
 
     @PostMapping("/{employeeId}/work-periods")
     public ResponseEntity<WorkPeriod> addWorkPeriod(
             @PathVariable("employeeId") Long employeeId,
             @RequestBody WorkPeriod workPeriod) {
-        var createdWorkPeriod = timeTrackingService.addWorkPeriod(employeeId, workPeriod);
+        var createdWorkPeriod = timeTrackingService.addWorkPeriod(new Employee(employeeId, ""), workPeriod);
         var createdUri = URI.create(this.baseURL + employeeId + "/work-periods/" + createdWorkPeriod.id());
         return ResponseEntity.created(createdUri).body(createdWorkPeriod);
     }

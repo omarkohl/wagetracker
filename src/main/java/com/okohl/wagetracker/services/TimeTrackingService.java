@@ -23,11 +23,11 @@ public class TimeTrackingService {
         this.repository = repository;
     }
 
-    public List<WorkPeriod> getWorkPeriods(Long employeeId) {
-        return this.repository.getWorkPeriods(new Employee(employeeId, ""));
+    public List<WorkPeriod> getWorkPeriods(Employee employee) {
+        return this.repository.getWorkPeriods(employee);
     }
 
-    public WorkPeriod addWorkPeriod(Long employeeId, WorkPeriod workPeriod) {
+    public WorkPeriod addWorkPeriod(Employee employee, WorkPeriod workPeriod) {
         if (!workPeriod.start().isBefore(workPeriod.end())) {
             throw new IllegalArgumentException("End must be after start");
         }
@@ -35,6 +35,6 @@ public class TimeTrackingService {
         if (workPeriod.start().isAfter(now) || workPeriod.end().isAfter(now)) {
             throw new IllegalArgumentException("Work period cannot be in the future");
         }
-        return this.repository.addWorkPeriod(new Employee(employeeId, ""), workPeriod);
+        return this.repository.addWorkPeriod(employee, workPeriod);
     }
 }

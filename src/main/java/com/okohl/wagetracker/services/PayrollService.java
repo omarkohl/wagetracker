@@ -22,7 +22,7 @@ public class PayrollService {
         return repository.getPayrollHours(month);
     }
 
-    public List<PayrollHours> getPayrollHours(YearMonth month, Long employeeId) {
-        return repository.getPayrollHours(month, new Employee(employeeId, ""));
+    public List<PayrollHours> getPayrollHours(YearMonth month, Employee employee) {
+        return repository.getPayrollHours(month, employee);
     }
 }

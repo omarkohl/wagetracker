@@ -31,7 +31,7 @@ public class TimeTrackingServiceTest {
                                 Instant.parse("2024-01-01T16:00:00Z"))));
 
         var service = new TimeTrackingService(mockRepository);
-        List<WorkPeriod> workPeriods = service.getWorkPeriods(1L);
+        List<WorkPeriod> workPeriods = service.getWorkPeriods(new Employee(1L, ""));
         assert workPeriods.size() == 1;
         assertEquals(1, workPeriods.size());
 
@@ -50,7 +50,7 @@ public class TimeTrackingServiceTest {
                 null,
                 Instant.parse("2024-01-01T08:00:00Z"),
                 Instant.parse("2024-01-01T16:00:00Z"));
-        WorkPeriod wp2 = service.addWorkPeriod(1L, workPeriod);
+        WorkPeriod wp2 = service.addWorkPeriod(new Employee(1L, ""), workPeriod);
         assertNotNull(wp2.id());
         // verify mockRepository was called
         verify(mockRepository).addWorkPeriod(any(Employee.class), eq(workPeriod));
@@ -69,7 +69,7 @@ public class TimeTrackingServiceTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> service.addWorkPeriod(1L, workPeriod),
+                () -> service.addWorkPeriod(new Employee(1L, ""), workPeriod),
                 "End must be after start");
     }
 
@@ -85,7 +85,7 @@ public class TimeTrackingServiceTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> service.addWorkPeriod(1L, workPeriod),
+                () -> service.addWorkPeriod(new Employee(1L, ""), workPeriod),
                 "Start must be in the past");
     }
 
@@ -101,7 +101,7 @@ public class TimeTrackingServiceTest {
 
         assertThrows(
                 IllegalArgumentException.class,
-                () -> service.addWorkPeriod(1L, workPeriod),
+                () -> service.addWorkPeriod(new Employee(1L, ""), workPeriod),
                 "End must be in the past");
     }
 }

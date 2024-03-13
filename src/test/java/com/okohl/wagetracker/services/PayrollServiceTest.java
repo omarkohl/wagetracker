@@ -58,7 +58,7 @@ public class PayrollServiceTest {
                                 PayrollHoursStatus.UNPROCESSED)));
 
         var service = new PayrollService(mockRepository);
-        var payrollHours = service.getPayrollHours(YearMonth.parse("2024-01"), 100L);
+        var payrollHours = service.getPayrollHours(YearMonth.parse("2024-01"), new Employee(100L, ""));
         assertEquals(2, payrollHours.size());
     }
 }
