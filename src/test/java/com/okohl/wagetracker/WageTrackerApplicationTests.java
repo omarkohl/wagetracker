@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.okohl.wagetracker.adapter.repositories.EmployeeRepository;
 import com.okohl.wagetracker.adapter.repositories.TimeTrackingRepository;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,8 +20,11 @@ class WageTrackerApplicationTests {
 	@Autowired
 	private MockMvc mockMvc;
 
-	@MockBean
+	@Autowired
 	private TimeTrackingRepository timeTrackingRepository;
+
+	@Autowired
+	private EmployeeRepository employeeRepository;
 
 	@Test
 	void testGetWorkPeriods() throws Exception {

@@ -19,6 +19,12 @@ public class TimeTrackingService {
     public List<WorkPeriod> getWorkPeriods(Long employeeId) {
         // For now, return a static list of work periods for the employee with the given
         // id
+        var all = timeTrackingRepository.findAll();
+        for (var workPeriod : all) {
+            System.out.println(workPeriod.getId());
+            System.out.println(workPeriod.getStart());
+            System.out.println(workPeriod.getEnd());
+        }
         if (employeeId == 1L) {
             return List.of(
                     new WorkPeriod(
