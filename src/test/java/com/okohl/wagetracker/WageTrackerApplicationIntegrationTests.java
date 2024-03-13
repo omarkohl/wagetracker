@@ -3,36 +3,33 @@ package com.okohl.wagetracker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.reactive.server.WebTestClient;
 
 import com.okohl.wagetracker.adapter.repositories.EmployeeEntity;
 import com.okohl.wagetracker.adapter.repositories.EmployeeRepository;
 import com.okohl.wagetracker.adapter.repositories.TimeTrackingRepository;
 import com.okohl.wagetracker.adapter.repositories.WorkPeriodEntity;
+import com.okohl.wagetracker.domain.WorkPeriod;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.HttpHeaders.ACCEPT;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.ArrayList;
 import java.time.Instant;
 import java.util.Random;
 
-@AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class WageTrackerApplicationIntegrationTests {
 
 	@Autowired
-	private MockMvc mockMvc;
+	private WebTestClient webTestClient;
 
 	@Autowired
 	private TimeTrackingRepository timeTrackingRepository;
@@ -68,11 +65,19 @@ class WageTrackerApplicationIntegrationTests {
 	@Test
 	void testGetWorkPeriods() throws Exception {
 		var url = "/v0/time-tracking/" + validEmployeeId + "/work-periods";
-		mockMvc.perform(MockMvcRequestBuilders.get(url))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(2)))
-				.andExpect(content().string(containsString("2023-02-02T16:00:00Z")));
+		this.webTestClient
+				.get()
+				.uri(url)
+				.header(ACCEPT, APPLICATION_JSON_VALUE)
+				.exchange()
+				.expectStatus().isOk()
+				.expectHeader().contentType(APPLICATION_JSON)
+				.expectBodyList(WorkPeriod.class)
+				.hasSize(2)
+				.consumeWith(response -> {
+					String responseBody = new String(response.getResponseBodyContent());
+					assertThat(responseBody).contains("2023-02-02T16:00:00Z");
+				});
 	}
 
 	@Test
@@ -84,28 +89,49 @@ class WageTrackerApplicationIntegrationTests {
 			invalidEmployeeId = random.nextLong();
 		} while (invalidEmployeeId == validEmployeeId);
 		var url = "/v0/time-tracking/" + invalidEmployeeId + "/work-periods";
-		mockMvc.perform(MockMvcRequestBuilders.get(url))
-				.andExpect(status().isOk())
-				.andExpect(content().string("[]"));
+		this.webTestClient
+				.get()
+				.uri(url)
+				.header(ACCEPT, APPLICATION_JSON_VALUE)
+				.exchange()
+				.expectStatus().isOk()
+				.expectHeader().contentType(APPLICATION_JSON)
+				.expectBody()
+				.jsonPath("$.length()").isEqualTo(0);
 	}
 
 	@Test
 	void testAddWorkPeriod() throws Exception {
 		var url = "/v0/time-tracking/" + validEmployeeId + "/work-periods";
 		var json = "{\"start\":\"2023-02-03T08:00:00Z\",\"end\":\"2023-02-03T16:00:00Z\"}";
-		mockMvc.perform(MockMvcRequestBuilders.post(url)
-				.contentType("application/json")
-				.content(json))
-				.andExpect(status().isCreated())
-				.andExpect(content().contentType(APPLICATION_JSON))
-				.andExpect(content().string(containsString("2023-02-03T16:00:00Z")));
+		webTestClient.post()
+				.uri(url)
+				.contentType(APPLICATION_JSON)
+				.bodyValue(json)
+				.exchange()
+				.expectStatus().isCreated()
+				.expectHeader().contentType(APPLICATION_JSON)
+				.expectBody(WorkPeriod.class)
+				.consumeWith(response -> {
+					var workPeriod = response.getResponseBody();
+					assertThat(workPeriod).isNotNull();
+					assertThat(workPeriod.id()).isNotNull();
+					assertThat(workPeriod.start()).isEqualTo(Instant.parse("2023-02-03T08:00:00Z"));
+					assertThat(workPeriod.end()).isEqualTo(Instant.parse("2023-02-03T16:00:00Z"));
+				});
 
 		// verify that the work period was added
-		mockMvc.perform(MockMvcRequestBuilders.get(url))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType(APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(3)))
-				.andExpect(content().string(containsString("2023-02-03T16:00:00Z")));
+		webTestClient.get()
+				.uri(url)
+				.exchange()
+				.expectStatus().isOk()
+				.expectHeader().contentType(APPLICATION_JSON)
+				.expectBodyList(WorkPeriod.class)
+				.hasSize(3)
+				.consumeWith(response -> {
+					String responseBody = new String(response.getResponseBodyContent());
+					assertThat(responseBody).contains("2023-02-03T16:00:00Z");
+				});
 
 	}
 
