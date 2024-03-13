@@ -57,19 +57,51 @@ public class TimeTrackingServiceTest {
     }
 
     @ParameterizedTest
-@ValueSource(strings = {"2024-01-01T08:00:00Z", "2024-01-01T16:00:00Z"})
-void testEndMustBeAfterStart(String endTime) {
-    DataRepository mockRepository = Mockito.mock(DataRepository.class);
+    @ValueSource(strings = { "2024-01-01T08:00:00Z", "2024-01-01T16:00:00Z" })
+    void testEndMustBeAfterStart(String endTime) {
+        DataRepository mockRepository = Mockito.mock(DataRepository.class);
 
-    var service = new TimeTrackingService(mockRepository);
-    var workPeriod = new WorkPeriod(
-            null,
-            Instant.parse("2024-01-01T16:00:00Z"),
-            Instant.parse(endTime));
+        var service = new TimeTrackingService(mockRepository);
+        var workPeriod = new WorkPeriod(
+                null,
+                Instant.parse("2024-01-01T16:00:00Z"),
+                Instant.parse(endTime));
 
-    assertThrows(
-            IllegalArgumentException.class,
-            () -> service.addWorkPeriod(1L, workPeriod),
-            "End must be after start");
-}
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addWorkPeriod(1L, workPeriod),
+                "End must be after start");
+    }
+
+    @Test
+    void testStartMustBeInThePast() {
+        DataRepository mockRepository = Mockito.mock(DataRepository.class);
+
+        var service = new TimeTrackingService(mockRepository);
+        var workPeriod = new WorkPeriod(
+                null,
+                Instant.now().plusSeconds(60 * 60),
+                Instant.now().plusSeconds(60 * 60 * 2));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addWorkPeriod(1L, workPeriod),
+                "Start must be in the past");
+    }
+
+    @Test
+    void testEndMustBeInThePast() {
+        DataRepository mockRepository = Mockito.mock(DataRepository.class);
+
+        var service = new TimeTrackingService(mockRepository);
+        var workPeriod = new WorkPeriod(
+                null,
+                Instant.now().minusSeconds(60 * 60 * 2),
+                Instant.now().plusSeconds(60 * 60 * 2));
+
+        assertThrows(
+                IllegalArgumentException.class,
+                () -> service.addWorkPeriod(1L, workPeriod),
+                "End must be in the past");
+    }
 }

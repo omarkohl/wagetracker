@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import com.okohl.wagetracker.domain.WorkPeriod;
 import com.okohl.wagetracker.domain.DataRepository;
 import com.okohl.wagetracker.domain.Employee;
+import java.time.Instant;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
@@ -29,6 +30,10 @@ public class TimeTrackingService {
     public WorkPeriod addWorkPeriod(Long employeeId, WorkPeriod workPeriod) {
         if (!workPeriod.start().isBefore(workPeriod.end())) {
             throw new IllegalArgumentException("End must be after start");
+        }
+        var now = Instant.now();
+        if (workPeriod.start().isAfter(now) || workPeriod.end().isAfter(now)) {
+            throw new IllegalArgumentException("Work period cannot be in the future");
         }
         return this.repository.addWorkPeriod(new Employee(employeeId, ""), workPeriod);
     }
