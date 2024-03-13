@@ -18,6 +18,10 @@ public class PayrollService {
         this.repository = repository;
     }
 
+    public List<PayrollHours> getPayrollHours() {
+        return repository.getPayrollHours();
+    }
+
     public List<PayrollHours> getPayrollHours(YearMonth month) {
         return repository.getPayrollHours(month);
     }

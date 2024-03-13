@@ -78,19 +78,7 @@ public class Database implements DataRepository {
 
     @Override
     public List<PayrollHours> getPayrollHours(YearMonth month) {
-        var payrollHours = new ArrayList<PayrollHours>();
-        var payrollHoursDb = this.payrollHoursRepository.findByMonth(month);
-        for (var ph : payrollHoursDb) {
-            var employeeDb = ph.getEmployee();
-            var employee = new Employee(employeeDb.getId(), employeeDb.getName());
-            payrollHours.add(new PayrollHours(
-                    ph.getId(),
-                    ph.getMonth(),
-                    employee,
-                    ph.getHours(),
-                    ph.getStatus()));
-        }
-        return payrollHours;
+        return convertFromDb(this.payrollHoursRepository.findByMonth(month));
     }
 
     @Override
@@ -109,5 +97,25 @@ public class Database implements DataRepository {
     public PayrollHours updatePayrollHours(PayrollHours payrollHours) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'updatePayrollHours'");
+    }
+
+    @Override
+    public List<PayrollHours> getPayrollHours() {
+        return convertFromDb(this.payrollHoursRepository.findAll());
+    }
+
+    private List<PayrollHours> convertFromDb(List<PayrollHoursEntity> payrollHoursDb) {
+        var payrollHours = new ArrayList<PayrollHours>();
+        for (var ph : payrollHoursDb) {
+            var employeeDb = ph.getEmployee();
+            var employee = new Employee(employeeDb.getId(), employeeDb.getName());
+            payrollHours.add(new PayrollHours(
+                    ph.getId(),
+                    ph.getMonth(),
+                    employee,
+                    ph.getHours(),
+                    ph.getStatus()));
+        }
+        return payrollHours;
     }
 }

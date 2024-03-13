@@ -48,7 +48,7 @@ class WageTrackerApplicationIntegrationTests {
 
 	@BeforeEach
 	void setupDb() {
-		var employee = new EmployeeEntity("John Doe");
+		var employee = new EmployeeEntity("Eoin Curran");
 		employee = employeeRepository.save(employee);
 		validEmployeeId = employee.getId();
 
@@ -176,7 +176,7 @@ class WageTrackerApplicationIntegrationTests {
 
 	@Test
 	void testGetPayrollHours() throws Exception {
-		var url = "/v0/payroll/2024-01";
+		var url = "/v0/payroll";
 		this.webTestClient
 				.get()
 				.uri(url)
@@ -187,7 +187,7 @@ class WageTrackerApplicationIntegrationTests {
 				.expectBody(String.class)
 				.consumeWith(response -> {
 					var responseBody = response.getResponseBody();
-					assertThat(responseBody).contains("John Doe");
+					assertThat(responseBody).contains("Eoin Curran");
 				});
 	}
 

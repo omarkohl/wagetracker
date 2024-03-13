@@ -6,10 +6,8 @@ import com.okohl.wagetracker.domain.PayrollHours;
 import com.okohl.wagetracker.services.PayrollService;
 
 import java.util.List;
-import java.time.YearMonth;
 
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
@@ -22,8 +20,8 @@ public class PayrollController {
         this.payrollService = payrollService;
     }
 
-    @GetMapping("/{month}")
-    public List<PayrollHours> getPayrollHours(@PathVariable("month") String month) {
-        return payrollService.getPayrollHours(YearMonth.parse(month));
+    @GetMapping("")
+    public List<PayrollHours> getPayrollHours() {
+        return payrollService.getPayrollHours();
     }
 }
