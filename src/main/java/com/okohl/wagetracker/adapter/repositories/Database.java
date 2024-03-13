@@ -19,9 +19,11 @@ public class Database implements DataRepository {
     private static final Logger log = LoggerFactory.getLogger(Database.class);
 
     private final EmployeeRepository employeeRepository;
+    private final TimeTrackingRepository timeTrackingRepository;
 
-    public Database(EmployeeRepository employeeRepository) {
+    public Database(EmployeeRepository employeeRepository, TimeTrackingRepository timeTrackingRepository) {
         this.employeeRepository = employeeRepository;
+        this.timeTrackingRepository = timeTrackingRepository;
     }
 
     @Override
@@ -51,7 +53,18 @@ public class Database implements DataRepository {
 
     @Override
     public WorkPeriod addWorkPeriod(Employee employee, WorkPeriod workPeriod) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addWorkPeriod'");
+        var dbEmployee = employeeRepository.findById(employee.id());
+        if (!dbEmployee.isPresent()) {
+            throw new IllegalArgumentException("Employee not found");
+        }
+        var dbWorkPeriod = new WorkPeriodEntity(dbEmployee.get(),
+                workPeriod.start(),
+                workPeriod.end());
+
+        var savedWorkPeriod = timeTrackingRepository.save(dbWorkPeriod);
+        return new WorkPeriod(
+                savedWorkPeriod.getId(),
+                savedWorkPeriod.getStart(),
+                savedWorkPeriod.getEnd());
     }
 }

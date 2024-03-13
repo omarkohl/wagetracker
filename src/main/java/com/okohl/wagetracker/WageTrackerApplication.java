@@ -12,10 +12,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
-import com.okohl.wagetracker.adapter.repositories.Employee;
+import com.okohl.wagetracker.adapter.repositories.EmployeeEntity;
 import com.okohl.wagetracker.adapter.repositories.EmployeeRepository;
 import com.okohl.wagetracker.adapter.repositories.TimeTrackingRepository;
-import com.okohl.wagetracker.adapter.repositories.WorkPeriod;
+import com.okohl.wagetracker.adapter.repositories.WorkPeriodEntity;
 
 @SpringBootApplication
 public class WageTrackerApplication {
@@ -32,24 +32,24 @@ public class WageTrackerApplication {
 			TimeTrackingRepository timeTrackingRepository,
 			EmployeeRepository employeeRepository) {
 		return (args) -> {
-			var employee = new Employee("John Doe");
+			var employee = new EmployeeEntity("John Doe");
 			employee = employeeRepository.save(employee);
 
-			var workPeriods = new ArrayList<WorkPeriod>(
+			var workPeriods = new ArrayList<WorkPeriodEntity>(
 					List.of(
-							new WorkPeriod(
+							new WorkPeriodEntity(
 									employee,
 									Instant.parse("2022-01-01T08:00:00Z"),
 									Instant.parse("2022-01-01T16:00:00Z")),
-							new WorkPeriod(
+							new WorkPeriodEntity(
 									employee,
 									Instant.parse("2022-01-02T08:00:00Z"),
 									Instant.parse("2022-01-02T16:00:00Z")),
-							new WorkPeriod(
+							new WorkPeriodEntity(
 									employee,
 									Instant.parse("2022-01-03T08:00:00Z"),
 									Instant.parse("2022-01-03T16:00:00Z")),
-							new WorkPeriod(
+							new WorkPeriodEntity(
 									employee,
 									Instant.parse("2022-01-04T08:00:00Z"),
 									Instant.parse("2022-01-04T16:00:00Z")))

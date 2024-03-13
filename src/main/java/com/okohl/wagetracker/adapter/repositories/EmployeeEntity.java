@@ -9,19 +9,19 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Employee {
+public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
     @OneToMany(mappedBy = "employee")
-    private List<WorkPeriod> workPeriods;
+    private List<WorkPeriodEntity> workPeriods;
 
-    private Employee() {
+    private EmployeeEntity() {
     }
 
-    public Employee(String name) {
+    public EmployeeEntity(String name) {
         this.name = name;
     }
 
@@ -33,11 +33,11 @@ public class Employee {
         return name;
     }
 
-    public List<WorkPeriod> getWorkPeriods() {
+    public List<WorkPeriodEntity> getWorkPeriods() {
         return workPeriods;
     }
 
-    public void setWorkPeriods(List<WorkPeriod> workPeriods) {
+    public void setWorkPeriods(List<WorkPeriodEntity> workPeriods) {
         this.workPeriods = workPeriods;
     }
 }

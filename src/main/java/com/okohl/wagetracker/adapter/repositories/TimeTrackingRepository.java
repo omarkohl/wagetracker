@@ -4,6 +4,6 @@ import java.util.List;
 
 import org.springframework.data.repository.ListCrudRepository;
 
-public interface TimeTrackingRepository extends ListCrudRepository<WorkPeriod, Long> {
-    public List<WorkPeriod> findByEmployeeId(Long employeeId);
+public interface TimeTrackingRepository extends ListCrudRepository<WorkPeriodEntity, Long> {
+    public List<WorkPeriodEntity> findByEmployeeId(Long employeeId);
 }

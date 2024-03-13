@@ -2,8 +2,6 @@ package com.okohl.wagetracker.adapter.repositories;
 
 import java.time.Instant;
 
-import org.hibernate.boot.registry.classloading.spi.ClassLoaderService.Work;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,7 +11,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 @Entity
-public class WorkPeriod {
+public class WorkPeriodEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,12 +24,12 @@ public class WorkPeriod {
 
     @ManyToOne
     @JoinColumn(name = "employee_id")
-    private Employee employee;
+    private EmployeeEntity employee;
 
-    private WorkPeriod() {
+    private WorkPeriodEntity() {
     }
 
-    public WorkPeriod(Employee employee, Instant start, Instant end) {
+    public WorkPeriodEntity(EmployeeEntity employee, Instant start, Instant end) {
         this.employee = employee;
         this.start = start;
         this.end = end;
@@ -49,7 +47,7 @@ public class WorkPeriod {
         return end;
     }
 
-    public Employee getEmployee() {
+    public EmployeeEntity getEmployee() {
         return employee;
     }
 }
